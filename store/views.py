@@ -11,6 +11,12 @@ def categories(request):
 
     return {'categories': categories, 'products': products}
 
+def list_category(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    products = Product.objects.filter(category=category)
+
+    return render(request, 'store/list-category.html', {'category': category, 'products': products})
+
 def products(request):
     products = Product.objects.all()
 
