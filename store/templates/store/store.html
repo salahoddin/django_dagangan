@@ -40,7 +40,8 @@
                             <img class="img-fluid" alt="Responsive image" src="{{ product.image.url }}">
                             <div class="card-body">
                                 <p class="card-text text-center">
-                                    <a class="text-info text-decoration-none" href="">{{ product.title | capfirst }}</a>
+                                    <!-- <a class="text-info text-decoration-none" href="{% url 'product' slug=product.slug %}">{{ product.title | capfirst }}</a> -->
+                                    <a class="text-info text-decoration-none" href="{{ product.get_absolute_url }}">{{ product.title | capfirst }}</a>
                                 </p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="m-auto">${{product.price}} </h5>
