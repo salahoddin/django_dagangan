@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'store.views.categories', # to make the categories available for every template
+                'cart.context_processors.cart' # cart is the fn name from context_processors.py
             ],
         },
     },
