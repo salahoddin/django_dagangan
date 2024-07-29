@@ -1,6 +1,7 @@
 {% include "store/base.html" %}
 
 {% load static %}
+{% load mathfilters %}
 
 {% block content %}
 
@@ -11,23 +12,18 @@
       <h1 class="h5"> Shopping cart </h1>
 
 	<hr>
-      
+      {% for cart_product in cart %}
+        {% with prod=cart_product.product %}
       <br>
-
-      <div class="row mb-4 border product-item">
-        
-        <div class="col-md-3 col-lg-2 order-md-first bg-light">
-        
-            <img class="img-fluid mx-auto d-block" width="200px" alt="Responsive image" src=""> <!-- Product image -->
-        
-        </div>
-
-        
+      <div class="row mb-4 border product-item">   
+        <div class="col-md-3 col-lg-2 order-md-first bg-light"> 
+            <img class="img-fluid mx-auto d-block" width="200px" alt="Responsive image" src="{{ prod.image.url }}"> 
+        </div>       
         <div class="col-md-9 col-lg-10 ps-md-3 ps-lg-10">
+
+          <a href="{{ prod.get_absolute_url }}" class="text-decoration-none"> <!-- Product get absolute url -->
           
-          <a href="" class="text-decoration-none text-reset"> <!-- Product get absolute url -->
-          
-            <h1 class="h5 pt-2"> <!-- Product title --> </h1>
+            <h1 class="h5 pt-2"> {{ prod.title }} </h1>
           
           </a>
           
@@ -35,12 +31,10 @@
             
             <div class="col border-bottom">
               
-                <div class="row p-3">
-              
-                <div class="col-6"> Product </div>
-              
-                <div class="col-6 text-end"><span class="h6 fw-bold">$ <!-- Product price --> </span></div>
-            
+              <div class="row p-3">
+                <div class="col-6"> Product </div>     
+                <!-- used math filter library below to perform math operations         -->
+                <div class="col-6 text-end"><span class="h6 fw-bold">$ {{ prod.price|mul:cart_product.quantity }} </span></div> 
               </div>
             
             </div>
@@ -58,8 +52,8 @@
                   <select id="">
                   
                     <option selected>
-                  
-                        {{item.qty}}
+                        <!-- quantity comes from cart, and not from prod -->
+                        {{ cart_product.quantity }}
                   
                     </option>
                   
@@ -92,31 +86,29 @@
 
                 </div>
         
-            </div>
+              </div>
         
             </div>
     
-            </div>
+          </div>
     
         </div>
       
     </div>
-      
-
+      {% endwith %}
+    {% endfor %}
 
       <div class="col-12 text-end">
  
-        <div class="h6 fw-bold"> Sub total: $ <div id="total" class="d-inline-flex"> <!-- cart.get_total --> </div></div>
+        <div class="h6 fw-bold"> Sub total: $ <div id="total" class="d-inline-flex"> {{ cart.get_total }} </div></div>
  
       </div>
- 
 
     </div>
-  
+    <br>
+    <br>
 
  </main>
-
-
 
 {% endblock %}
 
