@@ -15,7 +15,7 @@
       {% for cart_product in cart %}
         {% with prod=cart_product.product %}
       <br>
-      <div class="row mb-4 border product-item">   
+      <div class="row mb-4 border product-item" id="cart-item-{{ prod.id }}" data-index="{{ prod.id }}">
         <div class="col-md-3 col-lg-2 order-md-first bg-light"> 
             <img class="img-fluid mx-auto d-block" width="200px" alt="Responsive image" src="{{ prod.image.url }}"> 
         </div>       
@@ -34,7 +34,9 @@
               <div class="row p-3">
                 <div class="col-6"> Product </div>     
                 <!-- used math filter library below to perform math operations         -->
-                <div class="col-6 text-end"><span class="h6 fw-bold">$ {{ prod.price|mul:cart_product.quantity }} </span></div> 
+                <div id="product-total" class="col-6 text-end" data-index="{{ prod.id }}">
+                  <span class="h6 fw-bold">$ {{ prod.price|mul:cart_product.quantity }}</span>
+                </div> 
               </div>
             
             </div>
@@ -49,7 +51,7 @@
 
                   &nbsp; 
                   
-                  <select id="">
+                  <select id="select-{{ prod.id }}">
                   
                     <option selected>
                         <!-- quantity comes from cart, and not from prod -->
@@ -69,7 +71,7 @@
                   
                   <br> <br>
 
-                  <button type="button" id="update-button"
+                  <button type="button" data-index="{{ prod.id }}"
                     class="btn btn-primary btn-sm update-button">
                     Update
                   
@@ -77,7 +79,7 @@
                   
                   &nbsp;
 
-                  <button type="button" id="delete-button"
+                  <button type="button" data-index="{{ prod.id }}"
                     class="btn btn-danger btn-sm delete-button">
                     Delete
         
@@ -109,6 +111,68 @@
     <br>
 
  </main>
+
+ <script>
+  $(document).on('click', '.delete-button', function(e){
+      e.preventDefault();
+      const productId = $(this).data('index');
+      $.ajax({
+        type: 'POST',
+        url: '{% url "cart-delete" %}',
+        data: {
+            product_id: productId,
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post' 
+        },
+        success: function(json){
+          $(`#cart-item-${json.product_id}`).remove(); // Remove the item from the cart
+          document.getElementById("cart-qty").textContent = json.quantity // from base.html but because of extends we can manipulate it here
+
+          document.getElementById("total").textContent = json.total
+
+        },
+        error: function(xhr, errmsg, err){
+        }
+    });
+  })
+
+  // updating the quantity
+  $(document).on('click', '.update-button', function(e){
+    e.preventDefault();
+
+    var productId = $(this).data('index');
+    var quantity = $(`#select-${productId} option:selected`).text() // Retrieve the selected option value
+
+    $.ajax({
+      type: 'POST',
+      url: '{% url "cart-update" %}',
+      data: {
+          product_id: $(this).data('index'),
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          quantity: quantity,
+          action: 'post' 
+      },
+      success: function(json){
+          document.getElementById("cart-qty").textContent = json.quantity // from base.html but because of extends we can manipulate it here
+          document.getElementById("total").textContent = json.total
+
+          var productTotalDiv = document.querySelector(`[data-index="${productId}"]`);
+
+          var updatedPrice = json.price * quantity;
+
+          // Update the text of the span inside the div with id "product-total"
+          var productTotalSpan = productTotalDiv.querySelector('span');
+          if (productTotalSpan) {
+              productTotalSpan.textContent = `$ ${updatedPrice}`;
+          }
+      },
+      error: function(xhr, errmsg, err){
+          
+      }
+  });
+})
+
+</script>
 
 {% endblock %}
 

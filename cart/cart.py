@@ -22,6 +22,27 @@ class Cart:
 
         self.session.modified = True
 
+    def delete(self, product_id):
+        product_id = str(product_id)
+        if product_id in self.cart:
+            del self.cart[product_id]
+
+        self.session.modified = True
+
+    # def update_quantity(self, product_id, quantity):
+    #     product_id = str(product_id)
+    #     if product_id in self.cart:
+    #         self.cart[product_id]['quantity'] = quantity
+
+    #     self.session.modified = True
+
+    def update_quantity(self, product_id, quantity):
+        product_id = str(product_id)
+        if product_id in self.cart:
+            self.cart[product_id]['quantity'] = quantity
+
+        self.session.modified = True
+    
     def __len__(self):
         return sum(item['quantity'] for item in self.cart.values())
     

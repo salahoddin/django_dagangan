@@ -8,7 +8,7 @@ from django.http import JsonResponse
 
 def cart_summary(request):
     cart = Cart(request)
-    print('type of cart', type(cart))
+    # print('type of cart', type(cart))
     return render(request, 'cart/cart-summary.html', {'cart': cart})
 
 def cart_add(request):
@@ -30,7 +30,56 @@ def cart_add(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def cart_delete(request):
-    pass
+    cart = Cart(request)
+    product_id = None
+    if request.POST.get('action') == 'post':
+        product_id = int(request.POST.get('product_id'))
+
+        if product_id:
+            print(product_id)
+            cart.delete(product_id=product_id) # removing from session
+            cart_quantity = cart.__len__() # this is coming from cart class
+            cart_total = cart.get_total()
+
+            return JsonResponse({'product_id': product_id, 'quantity': cart_quantity, 'total': cart_total})
+        
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def cart_update(request):
-    pass
+    cart = Cart(request)
+    product_id = None
+    if request.POST.get('action') == 'post':
+        product_id = int(request.POST.get('product_id'))
+        quantity = int(request.POST.get('quantity'))
+
+        if product_id:
+            cart.update_quantity(product_id=product_id, quantity=quantity)
+            cart_quantity = cart.__len__()
+            cart_total = cart.get_total()
+
+            # get the price in this part
+            price = cart.__dict__.get('cart', {}).get(str(product_id), {}).get('price') # found this using vars(cart)
+
+
+            return JsonResponse({'quantity': cart_quantity, 'total': cart_total, 'price': price})
+        
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+# def cart_update(request):
+#     cart = Cart(request)
+#     product_id = None
+#     if request.POST.get('action') == 'post':
+#         product_id = int(request.POST.get('product_id'))
+#         quantity = int(request.POST.get('quantity'))
+
+#         if product_id:
+#             cart.update_quantity(product_id=product_id, quantity=quantity)
+#             cart_quantity = cart.__len__()
+#             cart_total = cart.get_total()
+
+#             # get the price in this part
+#             price = cart.__dict__.get('cart', {}).get(str(product_id), {}).get('price') # found this using vars(cart)
+
+
+#             return JsonResponse({'quantity': cart_quantity, 'total': cart_total, 'price': price})
+        
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
