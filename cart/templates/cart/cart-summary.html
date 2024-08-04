@@ -158,7 +158,7 @@
 
           var productTotalDiv = document.querySelector(`[data-index="${productId}"]`);
 
-          var updatedPrice = json.price * quantity;
+          var updatedPrice = (json.price * quantity).toFixed(2); // Multiply and round the price to 2 decimal places
 
           // Update the text of the span inside the div with id "product-total"
           var productTotalSpan = productTotalDiv.querySelector('span');
