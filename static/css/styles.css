@@ -3,9 +3,6 @@
     width: 500px;
 }
 
-#register-body, #email-verification-sent-body {
-#register-body {
+#register-body, #email-verification-sent-body, #login-body {
     background-color: gray;
-    }
 }
-
