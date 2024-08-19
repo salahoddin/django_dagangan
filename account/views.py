@@ -4,7 +4,7 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode 
 from django.contrib.auth.models import User
-from . forms import CreateUserForm, LoginForm
+from . forms import CreateUserForm, LoginForm, UpdateUserForm
 from . token import user_tokenizer_generate
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
@@ -85,3 +85,27 @@ def logout(request):
 @login_required(login_url='login')
 def dashboard(request):
     return render(request, 'account/dashboard.html')
+
+@login_required(login_url='login')
+def profile_management(request):
+    if request.method == 'POST':
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+
+        if user_form.is_valid():
+            user_form.save()
+            return redirect('dashboard')
+    
+    user_form = UpdateUserForm(instance=request.user) # for pre-populated form
+    return render(request, 'account/profile-management.html', {'user_form': user_form}) 
+
+@login_required(login_url='login')
+def delete_account(request):
+    user = User.objects.get(id=request.user.id)
+    print('user:', user)
+    if request.method == 'POST':
+        print('user: POST')
+        user.delete()
+        print('User deleted')
+        return redirect('store')
+    
+    return render(request, 'account/delete-account.html')
