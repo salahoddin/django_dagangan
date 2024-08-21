@@ -88,6 +88,7 @@ def dashboard(request):
 
 @login_required(login_url='login')
 def profile_management(request):
+    user_form = UpdateUserForm(instance=request.user) # for pre-populated form | this should be in top to activate django username verification checker
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, instance=request.user)
 
@@ -95,7 +96,7 @@ def profile_management(request):
             user_form.save()
             return redirect('dashboard')
     
-    user_form = UpdateUserForm(instance=request.user) # for pre-populated form
+
     return render(request, 'account/profile-management.html', {'user_form': user_form}) 
 
 @login_required(login_url='login')
