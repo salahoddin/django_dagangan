@@ -4,6 +4,6 @@
 }
 
 #register-body, #email-verification-sent-body, #login-body, #dashboard-body,
-#update-body, #delete-body {
+#update-body, #delete-body, #password-reset-body {
     background-color: gray;
 }
