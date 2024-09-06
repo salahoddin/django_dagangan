@@ -79,7 +79,14 @@ def login(request):
     return render(request, 'account/login.html', {'form': form})  
 
 def logout(request): 
-    auth.logout(request)
+    # auth.logout(request)
+    try:
+        for key in list(request.session.keys()):
+            if key != 'session_key':
+                del request.session[key]
+    except KeyError:
+        pass
+
     return redirect('store')
 
 @login_required(login_url='login')
