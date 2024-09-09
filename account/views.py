@@ -9,6 +9,7 @@ from . token import user_tokenizer_generate
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Create your views here.
 def register(request):
@@ -87,6 +88,8 @@ def logout(request):
     except KeyError:
         pass
 
+    messages.success(request, 'You have been logged out!')
+
     return redirect('store')
 
 @login_required(login_url='login')
@@ -101,6 +104,9 @@ def profile_management(request):
 
         if user_form.is_valid():
             user_form.save()
+
+            messages.info(request, 'Account Updated!')
+
             return redirect('dashboard')
     
 
@@ -111,9 +117,10 @@ def delete_account(request):
     user = User.objects.get(id=request.user.id)
     print('user:', user)
     if request.method == 'POST':
-        print('user: POST')
         user.delete()
-        print('User deleted')
+
+        messages.error(request, 'Account deleted!')
+
         return redirect('store')
     
     return render(request, 'account/delete-account.html')
