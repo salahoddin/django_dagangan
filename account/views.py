@@ -6,8 +6,10 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.models import User
 from . forms import CreateUserForm, LoginForm, UpdateUserForm
 from . token import user_tokenizer_generate
+from payment.forms import ShippingForm # imported from different application
+from payment.models import ShippingAddress # imported from different application
 from django.contrib.auth.models import auth
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -124,3 +126,26 @@ def delete_account(request):
         return redirect('store')
     
     return render(request, 'account/delete-account.html')
+
+@login_required(login_url='login')
+def manage_shipping(request):
+    try:
+        shipping = ShippingAddress.objects.get(user=request.user.id)
+    except ShippingAddress.DoesNotExist:
+        # account has no shipping address
+        shipping = None
+
+    form = ShippingForm(instance=shipping) # for pre-populated form | this should be in top to activate django username verification checker
+
+    if request.method == 'POST':
+        form = ShippingForm(request.POST, instance=shipping)
+
+        if form.is_valid():
+            shipping_user = form.save(commit=False)
+            shipping_user.user = request.user # assign user FK on the object
+
+            shipping_user.save()
+
+            return redirect('dashboard')
+        
+    return render(request, 'account/manage-shipping.html', {'form': form})

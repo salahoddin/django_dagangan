@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'store', # django apps
     'cart',
     'account',
+    'payment',
 
     'mathfilters',
     'crispy_forms',

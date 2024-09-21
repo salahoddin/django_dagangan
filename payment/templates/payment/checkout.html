@@ -1,0 +1,84 @@
+
+{% include "store/base.html" %}
+
+
+{% load static %}
+
+
+{% block content %}
+
+    <body id="checkout-body">
+        <br>
+        <div class="container bg-white shadow-md p-5" style="width:500px; border-radius:20px;">
+            <form id="form">
+                <div>
+                    <h3> <i class="fa fa-chevron-circle-right" aria-hidden="true"></i> &nbsp; Complete your order </h3>
+                    <p> Please enter in the relevant information below. </p>
+                    <hr>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control validate" id="name" type="text" placeholder="Full name*" autocomplete="off" value="{{ shipping.full_name }}" required>
+                    </div>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control validate" id="email" type="email" placeholder="Email address*" autocomplete="off" value="{{ shipping.email }}" required>
+                    </div>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control validate" id="address1" type="text" placeholder="Address 1*" autocomplete="off" value="{{ shipping.address }}" required>
+                    </div>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control validate" id="address2" type="text" placeholder="Address 2*" autocomplete="off" value="{{ shipping.address_2 }}" required>
+                    </div>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control validate" id="city" type="text" placeholder="City*" autocomplete="off" value="{{ shipping.city }}" required>
+                    </div>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control" id="province" type="text" placeholder="province (Optional)" autocomplete="off" value="{{ shipping.province }}">
+                    </div>
+                    <br>
+                    <div class="form-field">
+                        <input class="form-control" id="postal" type="text" placeholder="Postal code (Optional)" autocomplete="off" value="{{ shipping.postal_code }}">
+                    </div>
+                </div>
+                <br>
+               <button id="complete-order" type="submit" class="btn btn-primary navbar-btn text-white"> &nbsp; Complete order </button>
+                <br>
+            </form>
+        </div>
+        <br>
+    </body>
+    <!-- Ajax integration --> 
+
+    <script>
+        // using submit instead of click to fire the required validators and avoid submitting an empty form
+        $(document).on('submit', function(e){ 
+            e.preventDefault();
+    
+            $.ajax({
+                type: 'POST',
+                url: '{% url "complete-order" %}',
+                data: {
+                    name: $('#name').val(),
+                    email: $('#email').val(),
+                    address1: $('#address1').val(),
+                    address2: $('#address2').val(),
+                    city: $('#city').val(),
+                    province: $('#province').val(),
+                    postal: $('#postal').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    action: 'post' 
+                },
+                success: function(json){
+                    window.location.replace("{% url 'payment-success' %}");
+                },
+                error: function(xhr, errmsg, err){
+                    window.location.replace("{% url 'payment-failed' %}");
+                }
+            });
+        })
+   </script>
+{% endblock %}
