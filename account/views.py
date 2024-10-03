@@ -8,6 +8,7 @@ from . forms import CreateUserForm, LoginForm, UpdateUserForm
 from . token import user_tokenizer_generate
 from payment.forms import ShippingForm # imported from different application
 from payment.models import ShippingAddress # imported from different application
+from payment.models import Order, OrderItem # imported from different application
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
@@ -149,3 +150,13 @@ def manage_shipping(request):
             return redirect('dashboard')
         
     return render(request, 'account/manage-shipping.html', {'form': form})
+
+@login_required(login_url='login')
+def track_orders(request):
+    try:
+        orders = OrderItem.objects.filter(user=request.user.id)
+        print('orders:', orders)
+        return render(request, 'account/track-orders.html', {'orders': orders})
+    except:
+        return render(request, 'account/track-orders.html')
+    

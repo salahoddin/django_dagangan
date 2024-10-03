@@ -4,6 +4,7 @@
 }
 
 #register-body, #email-verification-sent-body, #login-body, #dashboard-body,
-#update-body, #delete-body, #password-reset-body, #shipping-body, #checkout-body {
+#update-body, #delete-body, #password-reset-body, #shipping-body, #checkout-body, 
+#payment-success-body, #payment-failed-body, #track-orders-body {
     background-color: gray;
 }

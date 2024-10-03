@@ -1,1 +1,20 @@
-<h1>payment failed</h1>
+{% extends "store/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<body id="payment-failed-body">
+    <br>
+    <div class="container bg-white shadow-md p-5 form-layout text-center">
+        <i class="fa fa-credit-card-alt fa-3x text-danger" aria-hidden="true"></i>
+        <br>
+        <br>
+        <h5><strong>Payment failed.</strong></h5>
+        <hr>
+        <p>Your order was not processed.</p>
+    </div>
+</body>
+{% endblock %}
+
+
+

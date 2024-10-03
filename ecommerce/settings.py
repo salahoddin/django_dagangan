@@ -146,3 +146,7 @@ EMAIL_PORT = '587' # default
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'miskinan.development@gmail.com'
 EMAIL_HOST_PASSWORD = 'kvjz vmqk adcc vwls '
+
+
+# allow paypal popup
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
